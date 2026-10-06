@@ -1,0 +1,8 @@
+hypothesis,planned_comparison,primary_evidence,status
+Adding multi-domain EEG representation improves patient-independent prediction,Temporal-only vs temporal+spectral vs full multi-domain under identical LOSO folds,Per-patient F1 with sensitivity specificity and PR-AUC plus across-patient mean and SD,To be evaluated
+Attention-based fusion improves over simple fusion,Full multi-domain mean fusion vs full multi-domain attention fusion under identical LOSO folds,Per-patient F1 with sensitivity specificity and PR-AUC plus across-patient mean and SD,To be evaluated
+Subject-invariant learning improves cross-patient generalization,Multi-domain attention vs same model with gradient-reversal subject branch under identical LOSO folds,Per-patient F1 with sensitivity specificity and PR-AUC plus across-patient mean and SD,To be evaluated
+LOSO measures performance on unseen patients,Report each held-out patient's results and fold separation,Patient-wise metrics and held-out-patient identity in the fold reports,To be evaluated
+Explainability provides interpretable evidence about model input influence,Attention plus Integrated Gradients and optional SHAP analyses,Channel temporal spectral and time-frequency attribution visualizations,To be evaluated
+Preictal horizon changes prediction results,Repeat all models at 5 10 15 and 30 minute horizons,Patient-wise metrics and mean plus SD for every horizon,To be evaluated
+Ambiguous-window exclusion affects results,Run a prespecified exclusion-buffer sensitivity analysis,Compare patient-wise metrics and excluded-window counts,To be evaluated

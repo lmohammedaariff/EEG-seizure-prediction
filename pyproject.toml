@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seizure-prediction"
+version = "0.1.0"
+description = "Proposal-aligned multi-domain EEG seizure prediction research prototype"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.24", "scipy>=1.10", "pandas>=2.0", "torch>=2.1",
+  "mne>=1.6", "scikit-learn>=1.3", "PyYAML>=6.0", "streamlit>=1.30",
+  "matplotlib>=3.7", "tqdm>=4.66"
+]
+
+[project.optional-dependencies]
+explain = ["captum>=0.7", "shap>=0.44"]
+
+[project.scripts]
+seizure-prediction = "seizure_prediction.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

@@ -1,0 +1,4 @@
+proposal_example,dataset,patient_independent,features,model,validation,key_limitation,difference_claim_in_proposal,citation_status
+Domain adaptation (2024),CHB-MIT + Siena,yes,Raw / spectral EEG,CNN + domain adaptation,Cross-subject split,Needs target-domain data at training time,No target-domain data required; multi-domain + attention fusion,Illustrative entry only; replace with verified study citation
+Domain generalization (2026),CHB-MIT,yes,Disentangled latent features,Feature-disentanglement network,LOSO,Single-domain input; no explicit multi-domain fusion,Temporal + spectral + time-frequency fusion and explainability,Illustrative entry only; replace with verified study citation
+ViT + unsupervised domain adaptation,CHB-MIT,partial,Raw EEG patches,Vision Transformer + UDA,Cross-subject split,High compute cost; limited explainability,Lighter multi-branch CNN with explainability,Illustrative entry only; replace with verified study citation
