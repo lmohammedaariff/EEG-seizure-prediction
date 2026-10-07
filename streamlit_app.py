@@ -21,12 +21,17 @@ preliminary_path = Path(__file__).parent / "docs" / "proposal_preliminary_cnn_ls
 preliminary = pd.read_csv(preliminary_path)
 st.caption("Transcribed from proposal page 16 for context only. The final training/validation gap is about 29.1 percentage points. These values were not reproduced by this project and are not LOSO results.")
 st.line_chart(preliminary.set_index("epoch")[["training_accuracy_percent", "validation_accuracy_percent"]])
+project_root = Path(__file__).resolve().parent
 config_path = Path(st.sidebar.text_input("Configuration file", "config.yaml"))
+if not config_path.is_absolute():
+    config_path = project_root / config_path
 if not config_path.exists():
     st.error(f"Configuration not found: {config_path.resolve()}")
     st.stop()
 cfg = load_config(config_path)
 artifacts = Path(cfg["data"]["output"])
+if not artifacts.is_absolute():
+    artifacts = project_root / artifacts
 st.subheader("Patient-wise LOSO results")
 metrics_file = artifacts / "all_loso_patient_metrics.csv"
 if metrics_file.exists():
@@ -64,6 +69,9 @@ uploaded = None
 selected_edf = None
 if recording_mode == "Downloaded CHB-MIT data on E:":
     data_root = Path(cfg["data"]["root"])
+    if not data_root.is_absolute():
+        data_root = project_root / data_root
+    data_root = data_root.resolve()
     local_edfs = sorted(data_root.glob("**/*.edf")) if data_root.exists() else []
     if local_edfs:
         checkpoint_patient = Path(checkpoint).stem.lower() if checkpoint else ""
@@ -74,7 +82,7 @@ if recording_mode == "Downloaded CHB-MIT data on E:":
         selected_edf = st.selectbox(
             "EEG recording (.edf)",
             edf_choices,
-            format_func=lambda path: str(path.relative_to(Path(__file__).parent)),
+            format_func=lambda path: str(path.relative_to(project_root)),
         )
     else:
         st.info(f"No EDF files found under {data_root.resolve()}. Switch to upload, or put the downloaded CHB-MIT patient folders there.")

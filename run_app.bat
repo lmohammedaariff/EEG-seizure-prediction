@@ -17,7 +17,7 @@ set "XDG_CACHE_HOME=%PROJECT%\.cache"
 set "STREAMLIT_BROWSER_GATHER_USAGE_STATS=false"
 echo Starting Seizure Prediction app from %PROJECT%
 echo Keep this window open while using the app. Press Ctrl+C here to stop it.
-set "PORT=8501"
+set "PORT=0"
 for /L %%P in (8501,1,8510) do (
   netstat -ano | findstr /R /C:":%%P .*LISTENING" >nul
   if errorlevel 1 (
@@ -26,6 +26,11 @@ for /L %%P in (8501,1,8510) do (
   )
 )
 :port_found
+if "%PORT%"=="0" (
+  echo No free local port found from 8501 to 8510.
+  pause
+  exit /b 1
+)
 echo Streamlit will open http://127.0.0.1:%PORT% after it is ready.
 ".venv\Scripts\python.exe" -m streamlit run streamlit_app.py --server.headless false --server.address 127.0.0.1 --server.port %PORT%
 if errorlevel 1 echo Streamlit stopped with an error. Read the message above, then try again.
