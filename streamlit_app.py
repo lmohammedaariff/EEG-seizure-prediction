@@ -41,14 +41,57 @@ if external_files:
     st.dataframe(pd.read_csv(selected_external), use_container_width=True)
 
 st.subheader("Run prediction on an EDF")
-st.caption("Select a checkpoint for a held-out patient fold. The model produces window scores and both output types.")
-checkpoint = st.text_input("Checkpoint path (.pt)")
-uploaded = st.file_uploader("EEG recording (.edf)", type=["edf"])
-show_ig = st.checkbox("Explain the highest-scoring window with Integrated Gradients", value=True)
+st.caption("Choose a trained patient-fold checkpoint and an EDF. When you use the downloaded CHB-MIT data, select the same patient as the checkpoint.")
+checkpoints = sorted(artifacts.glob("horizon_*/complete/*.pt"))
+checkpoint = None
+if checkpoints:
+    selected_checkpoint = st.selectbox(
+        "Checkpoint (held-out patient fold)",
+        checkpoints,
+        format_func=lambda path: f"{path.stem} — {path.parent.parent.name}",
+    )
+    checkpoint = str(selected_checkpoint.resolve())
+else:
+    checkpoint_text = st.text_input("Checkpoint path (.pt)").strip()
+    checkpoint = checkpoint_text or None
+    st.info("No trained checkpoint is available yet. When training finishes a fold, its .pt file appears under artifacts.")
+
+recording_mode = st.selectbox(
+    "EEG recording source",
+    ["Downloaded CHB-MIT data on E:", "Upload an EDF file"],
+)
+uploaded = None
+selected_edf = None
+if recording_mode == "Downloaded CHB-MIT data on E:":
+    data_root = Path(cfg["data"]["root"])
+    local_edfs = sorted(data_root.glob("**/*.edf")) if data_root.exists() else []
+    if local_edfs:
+        checkpoint_patient = Path(checkpoint).stem.lower() if checkpoint else ""
+        matching_edfs = [path for path in local_edfs if path.parent.name.lower() == checkpoint_patient]
+        edf_choices = matching_edfs or local_edfs
+        if checkpoint and not matching_edfs:
+            st.warning("No EDFs were found in the matching patient folder. Choose an available EDF or switch to upload.")
+        selected_edf = st.selectbox(
+            "EEG recording (.edf)",
+            edf_choices,
+            format_func=lambda path: str(path.relative_to(Path(__file__).parent)),
+        )
+    else:
+        st.info(f"No EDF files found under {data_root.resolve()}. Switch to upload, or put the downloaded CHB-MIT patient folders there.")
+else:
+    uploaded = st.file_uploader("EEG recording (.edf)", type=["edf"])
+
+show_ig = st.checkbox("Explain the highest-scoring window with Integrated Gradients (slower)", value=False)
 run_shap = st.checkbox("Also compute SHAP explanations (slower)", value=False)
-if st.button("Predict windows", disabled=not (checkpoint and uploaded)):
-    with tempfile.NamedTemporaryFile(suffix=".edf", delete=False) as f:
-        f.write(uploaded.getvalue()); temp_path = Path(f.name)
+has_recording = selected_edf is not None or uploaded is not None
+if st.button("Predict windows", disabled=not (checkpoint and has_recording)):
+    temp_path = None
+    input_path = selected_edf
+    if uploaded is not None:
+        with tempfile.NamedTemporaryFile(suffix=".edf", delete=False) as f:
+            f.write(uploaded.getvalue())
+            temp_path = Path(f.name)
+        input_path = temp_path
     try:
         from seizure_prediction.inference import predict_edf, explain_edf_window
         from seizure_prediction.data import CHB_CHANNELS
@@ -56,7 +99,7 @@ if st.button("Predict windows", disabled=not (checkpoint and uploaded)):
         if device == "auto":
             import torch
             device = "cuda" if torch.cuda.is_available() else "cpu"
-        output = predict_edf(temp_path, checkpoint, device)
+        output = predict_edf(input_path, checkpoint, device)
         st.markdown("**Primary prediction: preictal vs non-preictal**")
         st.line_chart(output.set_index("start_time")[["preictal_probability"]])
         attention_columns = [c for c in output.columns if c.startswith("attention_")]
@@ -70,7 +113,7 @@ if st.button("Predict windows", disabled=not (checkpoint and uploaded)):
         if show_ig:
             best = int(output["preictal_probability"].to_numpy().argmax())
             with st.spinner("Calculating input attributions for the highest-scoring window..."):
-                explanation = explain_edf_window(temp_path, checkpoint, best, device, use_shap=run_shap)
+                explanation = explain_edf_window(input_path, checkpoint, best, device, use_shap=run_shap)
             st.subheader(f"Explanation for window {best} (input influence only)")
             st.caption("These maps describe model input influence. They do not identify a clinical seizure focus.")
             import numpy as np
@@ -100,4 +143,5 @@ if st.button("Predict windows", disabled=not (checkpoint and uploaded)):
     except Exception as exc:
         st.error(str(exc))
     finally:
-        temp_path.unlink(missing_ok=True)
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)

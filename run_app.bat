@@ -26,7 +26,7 @@ for /L %%P in (8501,1,8510) do (
   )
 )
 :port_found
-echo Opening http://127.0.0.1:%PORT%
-start "" "http://127.0.0.1:%PORT%"
+echo Streamlit will open http://127.0.0.1:%PORT% after it is ready.
 ".venv\Scripts\python.exe" -m streamlit run streamlit_app.py --server.headless false --server.address 127.0.0.1 --server.port %PORT%
+if errorlevel 1 echo Streamlit stopped with an error. Read the message above, then try again.
 pause
