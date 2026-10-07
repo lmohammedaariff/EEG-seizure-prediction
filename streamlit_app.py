@@ -20,7 +20,14 @@ st.subheader("Proposal-reported preliminary CNN-LSTM history")
 preliminary_path = Path(__file__).parent / "docs" / "proposal_preliminary_cnn_lstm.csv"
 preliminary = pd.read_csv(preliminary_path)
 st.caption("Transcribed from proposal page 16 for context only. The final training/validation gap is about 29.1 percentage points. These values were not reproduced by this project and are not LOSO results.")
-st.line_chart(preliminary.set_index("epoch")[["training_accuracy_percent", "validation_accuracy_percent"]])
+st.line_chart(
+    preliminary,
+    x="epoch",
+    y=["training_accuracy_percent", "validation_accuracy_percent"],
+    x_label="Epoch",
+    y_label="Accuracy (%)",
+    alt="Proposal-reported training and validation accuracy by epoch.",
+)
 project_root = Path(__file__).resolve().parent
 config_path = Path(st.sidebar.text_input("Configuration file", "config.yaml"))
 if not config_path.is_absolute():
@@ -38,7 +45,15 @@ if metrics_file.exists():
     results = pd.read_csv(metrics_file)
     st.dataframe(results, use_container_width=True)
 else:
-    st.write("No LOSO results yet. Run the training command in the project README.")
+    trained_checkpoints = sorted(artifacts.glob("horizon_*/complete/*.pt"))
+    if trained_checkpoints:
+        saved_folds = ", ".join(path.stem for path in trained_checkpoints)
+        st.info(
+            f"The aggregate LOSO table is written after training finishes. "
+            f"Fold checkpoints already saved: {len(trained_checkpoints)} ({saved_folds})."
+        )
+    else:
+        st.info("No fold checkpoints are available yet. Start the training command in the project README.")
 external_files = sorted(artifacts.glob("horizon_*/complete/external_siena/siena_patient_metrics.csv"))
 if external_files:
     selected_external = st.selectbox("Optional Siena report", external_files,
