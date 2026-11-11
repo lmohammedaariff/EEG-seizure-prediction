@@ -4,6 +4,17 @@ An end-to-end research project for CHB-MIT scalp EEG: reproducible EDF preproces
 
 > **Research use only.** This is not a medical device and must not be used to diagnose, treat, or make clinical decisions. A preictal score is an experimental model output, not a guaranteed warning.
 
+## Project documents and results
+
+- [Project abstract (PDF)](deliverables/Abstract_Mohammed_Aariff_L.pdf)
+- [Project architecture (PDF)](deliverables/Project_Architecture_Seizure_Prediction.pdf) | [Word document](deliverables/Project_Architecture_Seizure_Prediction.docx)
+- [CHB-MIT LOSO results](artifacts/results-multihorizon-16case/final_results_report.md)
+- [Statistical uncertainty and paired comparisons](artifacts/results-multihorizon-16case/statistical_uncertainty_report.md)
+- [Siena external evaluation](artifacts/results-siena-fullcohort/siena_external_report.md)
+- [Evaluation integrity audit](docs/evaluation_integrity_audit.md)
+- [Dashboard running status](RUN_STATUS.txt)
+- [Download the repository source and outputs as a ZIP](https://github.com/lmohammedaariff/EEG-seizure-prediction/archive/refs/heads/main.zip)
+
 ## What is implemented
 
 - CHB-MIT summary parsing and EDF preprocessing (60 Hz notch, 0.5–45 Hz band-pass, 128 Hz resampling, fixed bipolar channel order).
