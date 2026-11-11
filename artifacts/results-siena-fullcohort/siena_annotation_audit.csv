@@ -1,0 +1,4 @@
+subject,recording,action,onset_seconds,offset_seconds,recording_duration_seconds,annotation_recording
+PN00,pn00-3.edf,clipped_offset_to_recording_end,765.0,4425.0,2509.0,
+PN01,PN01-1.edf,mapped_single_recording_annotation_name,,,,pn01.edf
+PN11,PN11-1.edf,mapped_single_recording_annotation_name,,,,pn11-.edf

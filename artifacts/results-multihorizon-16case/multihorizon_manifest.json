@@ -1,0 +1,147 @@
+{
+  "config": {
+    "sampling_rate": 128,
+    "window_seconds": 10.0,
+    "overlap": 0.5,
+    "notch_hz": 60.0,
+    "bandpass_low_hz": 0.5,
+    "bandpass_high_hz": 45.0,
+    "preictal_minutes": 30,
+    "sph_minutes": 5,
+    "interictal_buffer_minutes": 60,
+    "horizons_minutes": [
+      5,
+      10,
+      15,
+      30
+    ],
+    "min_ictal_overlap_seconds": 1.0,
+    "batch_size": 64,
+    "epochs": 6,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "subject_loss_weight": 0.2,
+    "alarm_merge_gap_minutes": 1.0,
+    "far_budgets_per_hour": [
+      0.1,
+      0.5,
+      1.0
+    ],
+    "random_seed": 42,
+    "model_variant": "subject_invariant"
+  },
+  "models": [
+    "multi_horizon_temporal",
+    "multi_horizon_temporal_spectral",
+    "multi_horizon_multi_domain",
+    "multi_horizon",
+    "multi_horizon_cnn",
+    "multi_horizon_lstm",
+    "multi_horizon_cnn_lstm"
+  ],
+  "horizons_minutes": [
+    5,
+    10,
+    15,
+    30
+  ],
+  "test_subjects": [
+    "chb01",
+    "chb02",
+    "chb03",
+    "chb05",
+    "chb08",
+    "chb11",
+    "chb13",
+    "chb14",
+    "chb16",
+    "chb17",
+    "chb19",
+    "chb20",
+    "chb21",
+    "chb22",
+    "chb23",
+    "chb24"
+  ],
+  "dataset_audit": {
+    "patients": {
+      "chb01": {
+        "edf_recordings": 42,
+        "annotated_seizure_events": 7
+      },
+      "chb02": {
+        "edf_recordings": 36,
+        "annotated_seizure_events": 3
+      },
+      "chb03": {
+        "edf_recordings": 38,
+        "annotated_seizure_events": 7
+      },
+      "chb05": {
+        "edf_recordings": 39,
+        "annotated_seizure_events": 5
+      },
+      "chb08": {
+        "edf_recordings": 20,
+        "annotated_seizure_events": 5
+      },
+      "chb11": {
+        "edf_recordings": 35,
+        "annotated_seizure_events": 3
+      },
+      "chb13": {
+        "edf_recordings": 33,
+        "annotated_seizure_events": 12
+      },
+      "chb14": {
+        "edf_recordings": 26,
+        "annotated_seizure_events": 8
+      },
+      "chb16": {
+        "edf_recordings": 19,
+        "annotated_seizure_events": 10
+      },
+      "chb17": {
+        "edf_recordings": 21,
+        "annotated_seizure_events": 3
+      },
+      "chb19": {
+        "edf_recordings": 30,
+        "annotated_seizure_events": 3
+      },
+      "chb20": {
+        "edf_recordings": 29,
+        "annotated_seizure_events": 8
+      },
+      "chb21": {
+        "edf_recordings": 33,
+        "annotated_seizure_events": 4
+      },
+      "chb22": {
+        "edf_recordings": 31,
+        "annotated_seizure_events": 3
+      },
+      "chb23": {
+        "edf_recordings": 9,
+        "annotated_seizure_events": 7
+      },
+      "chb24": {
+        "edf_recordings": 22,
+        "annotated_seizure_events": 12
+      }
+    },
+    "total_edf_recordings": 463,
+    "total_annotated_seizure_events": 100,
+    "recording_time_source": "EDF header timestamps normalized to the earliest recording when all are present; otherwise CHB-MIT summary clocks."
+  },
+  "protocol": "Patient-held-out test folds; separate patient-level validation; training uses only remaining patients.",
+  "alarm_protocol": {
+    "score_time": "end of each EEG window",
+    "forecast_interval": "[seizure onset - SOP - SPH, seizure onset - SPH)",
+    "threshold_selection": "Validation patient only; maximize event sensitivity subject to each false-alarm/hour budget.",
+    "alarm_merge_gap_minutes": 1.0,
+    "false_alarm_denominator": "Union duration of horizon-labeled interictal windows; ictal and ambiguous windows excluded.",
+    "threshold_grid_candidates": 81
+  },
+  "warning": "Retrospective CHB-MIT subset evaluation; not a clinically validated alarm."
+}

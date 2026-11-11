@@ -1,0 +1,45 @@
+{
+  "protocol": "Rebuilt saved LOSO checkpoint predictions; no model retraining.",
+  "cases": [
+    "chb01",
+    "chb02",
+    "chb03",
+    "chb05",
+    "chb08",
+    "chb11",
+    "chb13",
+    "chb14",
+    "chb16",
+    "chb17",
+    "chb19",
+    "chb20",
+    "chb21",
+    "chb22",
+    "chb23",
+    "chb24"
+  ],
+  "unique_people": 15,
+  "model_variants": [
+    "multi_horizon",
+    "multi_horizon_lstm"
+  ],
+  "horizons_minutes": [
+    5,
+    10,
+    15,
+    30
+  ],
+  "sph_minutes": 5,
+  "false_alarm_budgets_per_hour": [
+    0.1,
+    0.5,
+    1.0
+  ],
+  "alarm_merge_gap_minutes": 1.0,
+  "alarm_persistence_windows": 2,
+  "window_seconds": 10.0,
+  "window_overlap": 0.5,
+  "threshold_selection": "Validation patient only; maximize event sensitivity subject to FAR budget using the same two-window persistence rule.",
+  "test_labels_used_for_threshold_selection": false,
+  "output_suffix": "_persistence2"
+}

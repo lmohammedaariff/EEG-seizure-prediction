@@ -1,0 +1,11 @@
+Live application check: PASS
+Checked: 10 Nov 2026, 07:29:46 PM IST
+Dashboard: http://127.0.0.1:8000/
+Health API: http://127.0.0.1:8000/api/health
+API status: ok
+Inference checkpoint ready: True
+Stored evaluation rows: 84
+CHB-MIT case folders in evaluated table: 16
+Distinct people in evaluated table: 15
+
+This records local application status at package time. To start it later, run Run_Project.bat from the extracted project folder.

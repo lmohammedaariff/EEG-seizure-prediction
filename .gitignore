@@ -1,23 +1,13 @@
 .venv/
+.venv-gpu/
 __pycache__/
 *.py[cod]
-*.egg-info/
-
-# Local EEG recordings, derived labels, and trained model checkpoints
+.pytest_cache/
+.ruff_cache/
+frontend/node_modules/
 data/
-artifacts/
-
-# Local caches, temporary downloads, logs, and app-specific state
-.tmp/
-.pip-cache/
-.cache/
-.mplconfig/
-.mne-data/
-.streamlit/
+artifacts/cache/
+artifacts/pip-cache/
+tmp/
+tmp_uploads/
 *.log
-
-# Editor and operating-system metadata
-.vscode/
-.idea/
-Thumbs.db
-.DS_Store

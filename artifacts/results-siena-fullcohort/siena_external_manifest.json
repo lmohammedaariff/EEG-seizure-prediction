@@ -1,0 +1,45 @@
+{
+  "protocol": "Frozen CHB-MIT LOSO fold, direct external evaluation; threshold is the validation-only threshold saved for that exact held-out fold. No Siena labels used for threshold selection.",
+  "dataset": "Siena Scalp EEG Database v1.0.0",
+  "subjects": [
+    "PN00",
+    "PN01",
+    "PN03",
+    "PN05",
+    "PN06",
+    "PN07",
+    "PN09",
+    "PN10",
+    "PN11",
+    "PN12",
+    "PN13",
+    "PN14",
+    "PN16",
+    "PN17"
+  ],
+  "variants": [
+    "multi_horizon",
+    "multi_horizon_cnn",
+    "multi_horizon_lstm",
+    "multi_horizon_cnn_lstm"
+  ],
+  "horizons_minutes": [
+    5,
+    10,
+    15,
+    30
+  ],
+  "sph_minutes": 5,
+  "far_budgets_per_hour": [
+    0.1,
+    0.5,
+    1.0
+  ],
+  "checkpoint_fold": "chb08",
+  "device": "cuda",
+  "sampling_rate_model_hz": 128,
+  "channel_strategy": "Siena referential 10-20 electrodes converted to the project's fixed bipolar montage; EKG ignored by EEG channel selection.",
+  "interpretation": "Full evaluation of the 14-participant locally downloaded Siena cohort; external transfer test uses one frozen CHB-MIT chb08 fold per model. Not clinical validation.",
+  "recordings": 41,
+  "annotated_seizure_events": 47
+}

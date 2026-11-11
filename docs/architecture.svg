@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="1835" viewBox="0 0 1160 1835" role="img" aria-labelledby="title description">
+  <title id="title">Logical architecture and evaluation of the patient-independent seizure prediction project</title>
+  <desc id="description">A six-stage architecture showing CHB-MIT EEG preprocessing and SOP/SPH labeling, a shared multi-horizon model, patient-separated LOSO training, class-imbalance handling, validation-calibrated event alarms with a two-window persistence rule, full downloaded-cohort Siena external evaluation, matched baselines, and explanation stability and faithfulness audits.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#43546b"/>
+    </marker>
+    <marker id="red-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#d9544d"/>
+    </marker>
+    <style>
+      .page { fill: #f5f7fb; }
+      .title { font: 700 28px "Segoe UI", Arial, sans-serif; fill: #17233b; }
+      .subtitle { font: 15px "Segoe UI", Arial, sans-serif; fill: #52627a; }
+      .heading { font: 700 17px "Segoe UI", Arial, sans-serif; fill: #17233b; }
+      .body { font: 14px "Segoe UI", Arial, sans-serif; fill: #34445d; }
+      .small { font: 12px "Segoe UI", Arial, sans-serif; fill: #52627a; }
+      .tiny { font: 11px "Segoe UI", Arial, sans-serif; fill: #52627a; }
+      .stage { stroke: #9db0c6; stroke-width: 1.5; stroke-dasharray: 7 5; fill: #ffffff; }
+      .card { stroke: #9aa9bd; stroke-width: 1.4; rx: 12; }
+      .connector { stroke: #43546b; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .adversary { stroke: #d9544d; stroke-width: 2; fill: none; stroke-dasharray: 7 5; marker-end: url(#red-arrow); }
+      .center { text-anchor: middle; }
+      .band-label { font: 700 16px "Segoe UI", Arial, sans-serif; fill: #17233b; text-anchor: middle; }
+      .wave { fill: none; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect class="page" width="1160" height="1810"/>
+  <text class="title center" x="580" y="44">Patient-Independent Multi-Horizon Seizure Forecasting</text>
+  <text class="subtitle center" x="580" y="72">Architecture and evaluation design · CHB-MIT scalp EEG research prototype</text>
+
+  <rect class="card" x="250" y="94" width="660" height="78" fill="#e6f1ff"/>
+  <text class="heading center" x="580" y="122">Multichannel EEG (CHB-MIT)</text>
+  <text class="body center" x="580" y="146">EDF recordings + patient-specific seizure onset annotations</text>
+  <text class="small center" x="580" y="163">16 CHB-MIT cases · 15 people · 5 / 10 / 15 / 30-minute SOPs · 5-minute SPH</text>
+  <path class="connector" d="M580 173 V190"/>
+
+  <rect class="stage" x="20" y="195" width="1120" height="225" rx="14"/>
+  <rect x="31" y="207" width="190" height="201" rx="10" fill="#d9eefb"/>
+  <text class="band-label" x="126" y="291">
+    <tspan x="126">1. DATA</tspan>
+    <tspan x="126" dy="23">PREPARATION</tspan>
+  </text>
+  <rect class="card" x="248" y="230" width="250" height="130" fill="#fff0f0"/>
+  <text class="heading center" x="373" y="258">Preprocessing</text>
+  <text class="body" x="267" y="286">
+    <tspan x="267">• Map canonical EEG channels</tspan>
+    <tspan x="267" dy="23">• 60 Hz notch + band-pass</tspan>
+    <tspan x="267" dy="23">• Resample to 128 Hz</tspan>
+  </text>
+  <rect class="card" x="540" y="230" width="250" height="130" fill="#fff5df"/>
+  <text class="heading center" x="665" y="258">Windowing and labels</text>
+  <text class="body" x="559" y="286">
+    <tspan x="559">• 10 s windows · 50% overlap</tspan>
+    <tspan x="559" dy="23">• SOP-specific labels · 5 min SPH</tspan>
+    <tspan x="559" dy="23">• Exclude ictal / ambiguous windows</tspan>
+  </text>
+  <rect class="card" x="832" y="230" width="275" height="130" fill="#e8f7f1"/>
+  <text class="heading center" x="969" y="258">Model input</text>
+  <text class="body center" x="969" y="291">Standardized multichannel</text>
+  <text class="body center" x="969" y="314">EEG windows + task labels</text>
+  <text class="small center" x="969" y="341">Same patient-aware pipeline for train / test</text>
+  <path class="connector" d="M498 295 H531"/>
+  <path class="connector" d="M790 295 H823"/>
+
+  <rect class="stage" x="20" y="438" width="1120" height="440" rx="14"/>
+  <rect x="31" y="450" width="190" height="416" rx="10" fill="#d9f3e8"/>
+  <text class="band-label" x="126" y="635">
+    <tspan x="126">2. MULTI-DOMAIN</tspan>
+    <tspan x="126" dy="23">FEATURE LEARNING</tspan>
+  </text>
+
+  <rect class="card" x="245" y="466" width="270" height="235" fill="#fff0f0"/>
+  <text class="heading center" x="380" y="493">Temporal domain</text>
+  <text class="small center" x="380" y="514">Raw EEG waveform</text>
+  <path class="wave" stroke="#3888e8" d="M266 558 C276 537 286 579 296 553 S316 537 326 557 S346 578 356 552 S376 540 386 558 S406 574 416 551 S436 542 446 559 S466 572 476 550 S496 542 506 558"/>
+  <path class="wave" stroke="#37a870" d="M266 576 C278 564 284 586 296 575 S316 566 326 579 S346 588 356 574 S376 566 386 578 S406 585 416 573 S436 566 446 579 S466 586 476 572 S496 565 506 578"/>
+  <text class="body center" x="380" y="624">Temporal CNN</text>
+  <text class="small center" x="380" y="650">Learns local waveform patterns</text>
+  <rect class="card" x="320" y="664" width="120" height="25" rx="6" fill="#fbd6d6"/>
+  <text class="small center" x="380" y="682">Temporal features</text>
+
+  <rect class="card" x="530" y="466" width="270" height="235" fill="#fff6df"/>
+  <text class="heading center" x="665" y="493">Frequency domain</text>
+  <text class="small center" x="665" y="514">PSD / band-power features</text>
+  <path d="M565 593 V535 M565 593 H765" stroke="#65758b" stroke-width="1.5"/>
+  <path d="M572 585 C590 579 590 548 605 546 S624 583 638 578 S654 548 671 553 S690 586 706 578 S731 543 746 553 S756 573 762 570" fill="none" stroke="#4386c6" stroke-width="2.5"/>
+  <text class="tiny" x="646" y="610">Frequency</text>
+  <text class="tiny" transform="translate(554 573) rotate(-90)">Power</text>
+  <text class="body center" x="665" y="639">Band-power MLP</text>
+  <text class="small center" x="665" y="661">Learns spectral energy patterns</text>
+  <rect class="card" x="605" y="674" width="120" height="20" rx="6" fill="#fce8ad"/>
+  <text class="small center" x="665" y="689">Spectral features</text>
+
+  <rect class="card" x="815" y="466" width="290" height="235" fill="#e9f2ff"/>
+  <text class="heading center" x="960" y="493">Time-frequency domain</text>
+  <text class="small center" x="960" y="514">STFT representation</text>
+  <rect x="858" y="529" width="204" height="88" fill="#112c5c" stroke="#65758b"/>
+  <path d="M858 606 C879 601 881 573 896 578 S916 604 933 590 S954 546 971 559 S994 603 1011 589 S1037 551 1062 558" fill="none" stroke="#35c4d1" stroke-width="8" opacity=".85"/>
+  <path d="M858 608 C882 603 886 588 901 590 S927 606 945 589 S963 566 980 572 S1004 601 1021 587 S1042 565 1062 568" fill="none" stroke="#f4c344" stroke-width="5" opacity=".9"/>
+  <text class="tiny" x="952" y="632">Time</text>
+  <text class="tiny" transform="translate(847 601) rotate(-90)">Frequency</text>
+  <text class="body center" x="960" y="654">Time-frequency CNN</text>
+  <text class="small center" x="960" y="678">Learns evolving spectral patterns</text>
+
+  <path class="connector" d="M380 701 V719 H665"/>
+  <path class="connector" d="M665 701 V719"/>
+  <path class="connector" d="M960 701 V719 H665"/>
+  <rect class="card" x="365" y="731" width="600" height="116" fill="#eee5ff"/>
+  <text class="heading center" x="665" y="758">Attention-based feature fusion</text>
+  <rect x="404" y="777" width="135" height="18" rx="5" fill="#f2aaaa"/>
+  <rect x="404" y="802" width="135" height="18" rx="5" fill="#f1d179"/>
+  <rect x="404" y="827" width="135" height="15" rx="5" fill="#a5c6ef"/>
+  <text class="tiny" x="414" y="791">Temporal</text>
+  <text class="tiny" x="414" y="816">Frequency</text>
+  <text class="tiny" x="414" y="840">Time-frequency</text>
+  <text class="tiny" x="553" y="810">→</text>
+  <rect class="card" x="582" y="780" width="165" height="52" rx="9" fill="#ffffff"/>
+  <text class="body center" x="664" y="812">Learned gates</text>
+  <text class="body" x="762" y="812">→ Fused representation</text>
+  <path class="connector" d="M539 806 H574"/>
+
+  <rect class="stage" x="20" y="896" width="1120" height="252" rx="14"/>
+  <rect x="31" y="908" width="190" height="228" rx="10" fill="#dcecff"/>
+  <text class="band-label" x="126" y="1000">
+    <tspan x="126">3. SUBJECT-</tspan>
+    <tspan x="126" dy="23">INVARIANT</tspan>
+    <tspan x="126" dy="23">LEARNING</tspan>
+  </text>
+  <rect class="card" x="438" y="916" width="410" height="54" fill="#e9f2ff"/>
+  <text class="heading center" x="643" y="940">Fused EEG representation</text>
+  <text class="small center" x="643" y="959">Shared learned features</text>
+  <path class="connector" d="M643 970 V987 H412 V1000"/>
+  <path class="connector" d="M643 987 H875 V1000"/>
+
+  <rect class="card" x="260" y="1004" width="300" height="106" fill="#ffe2e2"/>
+  <text class="heading center" x="410" y="1032">Seizure-state classifier</text>
+  <text class="body center" x="410" y="1060">Learns seizure-related features</text>
+  <text class="small center" x="410" y="1085">3-state + binary prediction tasks</text>
+
+  <rect class="card" x="590" y="1020" width="110" height="72" fill="#fff0ef" stroke="#d9544d"/>
+  <text class="small center" x="645" y="1047">Gradient</text>
+  <text class="small center" x="645" y="1065">reversal</text>
+  <text class="tiny center" x="645" y="1082">(GRL)</text>
+
+  <rect class="card" x="730" y="1004" width="300" height="106" fill="#deefff"/>
+  <text class="heading center" x="880" y="1032">Patient identity classifier</text>
+  <text class="body center" x="880" y="1060">Adversarial training branch</text>
+  <text class="small center" x="880" y="1085">Discourages patient-specific cues</text>
+  <path class="adversary" d="M590 1038 H568"/>
+  <path class="adversary" d="M700 1057 H722"/>
+  <text class="tiny center" x="645" y="1129">Adversarial objective</text>
+
+  <rect class="stage" x="20" y="1165" width="1120" height="191" rx="14"/>
+  <rect x="31" y="1177" width="190" height="167" rx="10" fill="#d9f3e8"/>
+  <text class="band-label" x="126" y="1242">
+    <tspan x="126">4. OUTPUT</tspan>
+    <tspan x="126" dy="23">TASKS</tspan>
+  </text>
+  <rect class="card" x="260" y="1190" width="390" height="132" fill="#ffe4e7"/>
+  <text class="heading center" x="455" y="1218">Three-state classification</text>
+  <rect x="282" y="1240" width="104" height="47" rx="8" fill="#c9f0d1" stroke="#78b18a"/>
+  <rect x="403" y="1240" width="104" height="47" rx="8" fill="#ffe5a8" stroke="#d0ad54"/>
+  <rect x="524" y="1240" width="104" height="47" rx="8" fill="#ffc4c4" stroke="#ce8585"/>
+  <text class="small center" x="334" y="1269">Interictal</text>
+  <text class="small center" x="455" y="1269">Preictal</text>
+  <text class="small center" x="576" y="1269">Ictal</text>
+  <text class="tiny center" x="455" y="1307">Classification task</text>
+
+  <rect class="card" x="690" y="1190" width="415" height="132" fill="#e3efff"/>
+  <text class="heading center" x="897" y="1218">Seizure prediction task</text>
+  <rect x="726" y="1240" width="154" height="47" rx="8" fill="#cfe5ff" stroke="#82a9d2"/>
+  <rect x="914" y="1240" width="154" height="47" rx="8" fill="#ffd5bc" stroke="#d7a27c"/>
+  <text class="small center" x="803" y="1269">Non-preictal</text>
+  <text class="small center" x="991" y="1269">Preictal</text>
+  <text class="tiny center" x="897" y="1307">Four shared-representation heads; one for each SOP</text>
+
+  <rect class="stage" x="20" y="1373" width="1120" height="196" rx="14"/>
+  <rect x="31" y="1385" width="190" height="172" rx="10" fill="#e8e3ff"/>
+  <text class="band-label" x="126" y="1450">
+    <tspan x="126">5. EXPLANATION</tspan>
+    <tspan x="126" dy="23">POST-HOC</tspan>
+    <tspan x="126" dy="23">ANALYSIS</tspan>
+  </text>
+  <rect class="card" x="248" y="1396" width="200" height="145" fill="#faf8ff"/>
+  <text class="heading center" x="348" y="1423">Channel importance</text>
+  <circle cx="348" cy="1470" r="27" fill="#4dbbc6" stroke="#53637a"/>
+  <circle cx="348" cy="1470" r="13" fill="#c8eff0"/>
+  <circle cx="348" cy="1450" r="3" fill="#d95552"/>
+  <circle cx="328" cy="1463" r="3" fill="#d95552"/>
+  <circle cx="368" cy="1463" r="3" fill="#d95552"/>
+  <circle cx="337" cy="1488" r="3" fill="#d95552"/>
+  <circle cx="359" cy="1488" r="3" fill="#d95552"/>
+  <text class="small center" x="348" y="1523">Integrated Gradients</text>
+
+  <rect class="card" x="465" y="1396" width="200" height="145" fill="#faf8ff"/>
+  <text class="heading center" x="565" y="1423">Time importance</text>
+  <path d="M489 1494 H641 M490 1450 V1494" stroke="#65758b" stroke-width="1.3"/>
+  <path d="M492 1480 C503 1480 506 1465 514 1477 S526 1490 534 1457 S547 1471 555 1479 S568 1490 576 1466 S590 1454 598 1475 S611 1489 621 1464 S634 1477 640 1458" fill="none" stroke="#ba4a49" stroke-width="2"/>
+  <text class="small center" x="565" y="1523">Raw EEG attribution</text>
+
+  <rect class="card" x="682" y="1396" width="200" height="145" fill="#faf8ff"/>
+  <text class="heading center" x="782" y="1423">Time-frequency</text>
+  <rect x="712" y="1440" width="140" height="61" fill="#173263"/>
+  <path d="M712 1490 C730 1485 733 1463 746 1468 S769 1490 780 1471 S801 1447 813 1457 S835 1490 852 1460" fill="none" stroke="#40c6cf" stroke-width="6"/>
+  <path d="M712 1490 C732 1486 744 1475 757 1480 S781 1494 795 1477 S822 1465 852 1473" fill="none" stroke="#f4c344" stroke-width="4"/>
+  <text class="small center" x="782" y="1523">Attribution map</text>
+
+  <rect class="card" x="899" y="1396" width="208" height="145" fill="#faf8ff"/>
+  <text class="heading center" x="1003" y="1423">Fusion attention</text>
+  <rect x="933" y="1466" width="31" height="38" fill="#9273d0"/>
+  <rect x="977" y="1448" width="31" height="56" fill="#e9bd49"/>
+  <rect x="1021" y="1478" width="31" height="26" fill="#659dd5"/>
+  <text class="tiny center" x="948" y="1521">Temp.</text>
+  <text class="tiny center" x="992" y="1521">Freq.</text>
+  <text class="tiny center" x="1036" y="1521">T-F</text>
+  <text class="tiny center" x="1003" y="1540">Stability + random-mask faithfulness audit</text>
+
+  <rect x="20" y="1585" width="1120" height="230" rx="14" fill="#fff1e5" stroke="#dcaa78" stroke-width="1.5"/>
+  <text class="heading" x="45" y="1618">6. CONTROLLED PATIENT-HELD-OUT EVALUATION</text>
+  <text class="body" x="45" y="1647">Sixteen held-out case folds represent 15 people; a separate patient group is used for validation.</text>
+  <text class="small" x="45" y="1668">Cases chb01 and chb21 are kept out of each other’s train/validation folds and combined for person-level summaries.</text>
+  <text class="body" x="45" y="1692">Class handling: patient/state-balanced sampling plus class-weighted loss for each SOP head; label counts are audited.</text>
+  <text class="body" x="45" y="1716">Ablations and matched CNN, LSTM, CNN–LSTM baselines use identical patient folds and horizon labels.</text>
+  <text class="small" x="45" y="1741">Validation-only thresholds plus a two-consecutive-window alert-persistence rule target 0.1 / 0.5 / 1.0 false alarms per hour.</text>
+  <text class="small" x="45" y="1763">Report event sensitivity, false alarms/hour and warning lead time separately from window-level metrics.</text>
+  <text class="small" x="45" y="1785">Audit EEG explanations for cross-window channel stability and top-channel vs random-mask faithfulness.</text>
+  <text class="small" x="45" y="1807">Full downloaded Siena cohort (14 participants) tested; CHB threshold transfer fails at strict sensitivity/FAR operating points.</text>
+</svg>
